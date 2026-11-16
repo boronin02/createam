@@ -1,7 +1,6 @@
 services:
   db:
     image: postgres:18
-    container_name: securities-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: devuser
@@ -15,11 +14,10 @@ services:
       test: ["CMD-SHELL", "pg_isready -U devuser -d projectdb"]
       interval: 5s
       timeout: 5s
-      retries: 10  
+      retries: 10
 
   backend:
     build: ./backend
-    container_name: securities-backend
     restart: unless-stopped
     ports:
       - "8080:8080"
