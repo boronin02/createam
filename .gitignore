@@ -4,3 +4,5 @@ backend/target/
 *.iml
 *.class
 *.jar
+
+!backend/.mvn/wrapper/maven-wrapper.jar
