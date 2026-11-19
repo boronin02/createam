@@ -5,6 +5,7 @@ import com.example.securities.repository.SecurityRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -139,5 +140,15 @@ public class MoexService {
         }
 
         return candles;
+    }
+
+    @Scheduled(fixedRate = 600000, initialDelay = 15000)
+    public void scheduledSync() {
+        System.out.println("[АВТООБНОВЛЕНИЕ] Запуск фоновой синхронизации с Московской биржей...");
+
+        // Вызываем наш основной метод синхронизации
+        int count = syncAllMarket();
+
+        System.out.println("[АВТООБНОВЛЕНИЕ] Синхронизация завершена. Всего бумаг в базе: " + count);
     }
 }

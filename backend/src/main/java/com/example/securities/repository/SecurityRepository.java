@@ -16,21 +16,11 @@ public class SecurityRepository {
 
     public List<SecurityDto> getAllSecurities() {
         String sql = """
-                SELECT id_security, ticker, isin, name, current_price, type_name, issuer_name, currency_code
+                SELECT id_security, ticker, isin, name, current_price, daily_change_rub, daily_change_percent, type_name, issuer_name, currency_code
                 FROM v_securities_detailed
                 ORDER BY ticker
                 """;
-
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new SecurityDto(
-                rs.getLong("id_security"),
-                rs.getString("ticker"),
-                rs.getString("isin"),
-                rs.getString("name"),
-                rs.getBigDecimal("current_price"),
-                rs.getString("type_name"),
-                rs.getString("issuer_name"),
-                rs.getString("currency_code")
-        ));
+        return jdbcTemplate.query(sql, (rs, rowNum) -> mapToSecurityDto(rs));
     }
 
     public List<Map<String, Object>> findAllSecuritiesForSync() {
@@ -62,10 +52,36 @@ public class SecurityRepository {
             return ids.get(0);
         }
 
-        // Генерируем РЕАЛЬНО случайный 10-значный ИНН
+        // Генерируем случайный 10-значный ИНН
         String randomInn = String.valueOf((long) (Math.random() * 9_000_000_000L) + 1_000_000_000L);
 
         String insertSql = "INSERT INTO issuers (name, inn) VALUES (?, ?) RETURNING id_issuer";
         return jdbcTemplate.queryForObject(insertSql, Long.class, issuerName, randomInn);
+    }
+
+    public SecurityDto getSecurityByTicker(String ticker) {
+        String sql = """
+                SELECT id_security, ticker, isin, name, current_price, daily_change_rub, daily_change_percent, type_name, issuer_name, currency_code
+                FROM v_securities_detailed
+                WHERE ticker = ?
+                """;
+        List<SecurityDto> list = jdbcTemplate.query(sql, (rs, rowNum) -> mapToSecurityDto(rs), ticker);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    // Вспомогательный метод для маппинга
+    private SecurityDto mapToSecurityDto(java.sql.ResultSet rs) throws java.sql.SQLException {
+        return new SecurityDto(
+                rs.getLong("id_security"),
+                rs.getString("ticker"),
+                rs.getString("isin"),
+                rs.getString("name"),
+                rs.getBigDecimal("current_price"),
+                rs.getBigDecimal("daily_change_rub"),
+                rs.getBigDecimal("daily_change_percent"),
+                rs.getString("type_name"),
+                rs.getString("issuer_name"),
+                rs.getString("currency_code")
+        );
     }
 }

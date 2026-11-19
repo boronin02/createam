@@ -10,12 +10,14 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SecurityDto {
-    Long idSecurity;
-    String ticker;
-    String isin;
-    String name;
-    BigDecimal currentPrice;
-    String typeName;
-    String issuerName;
-    String currencyCode;
+    private Long idSecurity;
+    private String ticker;
+    private String isin;
+    private String name;
+    private BigDecimal currentPrice;
+    private BigDecimal dailyChangeRub;
+    private BigDecimal dailyChangePercent;
+    private String typeName;
+    private String issuerName;
+    private String currencyCode;
 }

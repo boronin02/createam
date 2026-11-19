@@ -1,6 +1,7 @@
 package com.example.securities.controller;
 
 import com.example.securities.dto.PortfolioItemDto;
+import com.example.securities.dto.PortfolioSummaryDto;
 import com.example.securities.repository.PortfolioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,5 +20,10 @@ public class PortfolioController {
     @GetMapping("/{accountId}")
     public List<PortfolioItemDto> getPortfolio(@PathVariable Long accountId) {
         return portfolioRepository.getPortfolioByAccount(accountId);
+    }
+
+    @GetMapping("/{accountId}/summary")
+    public PortfolioSummaryDto getPortfolioSummary(@PathVariable Long accountId) {
+        return portfolioRepository.getPortfolioSummary(accountId);
     }
 }
