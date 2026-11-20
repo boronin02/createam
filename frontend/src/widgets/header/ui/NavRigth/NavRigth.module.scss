@@ -1,0 +1,19 @@
+.list {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+}
+
+.inner {
+    font-size: 25px;
+    color: #9b9b9b;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+}
+
+.text:hover .inner {
+    color: #fff;
+    transition: color 0.25s ease;
+}
