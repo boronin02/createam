@@ -45,4 +45,14 @@ public class SecurityController {
         }
         return ResponseEntity.ok(dto);
     }
+
+    @PostMapping("/sync/market")
+    public String syncStocksAndEtfs() {
+        return "Обновлено акций и ETF: " + moexService.syncStocksAndEtfs();
+    }
+
+    @PostMapping("/sync/bonds")
+    public String syncBonds() {
+        return "Обновлено облигаций: " + moexService.syncBonds();
+    }
 }

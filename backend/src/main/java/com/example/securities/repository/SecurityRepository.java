@@ -27,21 +27,24 @@ public class SecurityRepository {
         return jdbcTemplate.queryForList("SELECT id_security, ticker FROM securities");
     }
 
-    public void upsertSecurityFromMoex(String ticker, String shortName, String isin, BigDecimal price) {
+    public void upsertSecurityFromMoex(String ticker, String shortName, String isin,
+                                       BigDecimal price, BigDecimal prevPrice, Integer idType) {
         String cleanTicker = ticker.trim();
         Long issuerId = getOrCreateIssuer(shortName.trim());
 
         String sql = """
                 INSERT INTO securities 
-                (id_issuer, id_type, id_currency, ticker, isin, name, current_price, updated_at, session_status) 
-                VALUES (?, 1, 1, ?, ?, ?, ?, now(), 'OPEN')
+                (id_issuer, id_type, id_currency, ticker, isin, name, current_price, prev_close_price, updated_at, session_status) 
+                VALUES (?, ?, 1, ?, ?, ?, ?, ?, now(), 'OPEN')
                 ON CONFLICT (ticker, id_currency) 
                 DO UPDATE SET 
                     current_price = EXCLUDED.current_price,
-                    updated_at = EXCLUDED.updated_at
+                    prev_close_price = EXCLUDED.prev_close_price,
+                    updated_at = EXCLUDED.updated_at,
+                    id_type = EXCLUDED.id_type
                 """;
 
-        jdbcTemplate.update(sql, issuerId, cleanTicker, isin, shortName, price);
+        jdbcTemplate.update(sql, issuerId, idType, cleanTicker, isin, shortName, price, prevPrice);
     }
 
     private Long getOrCreateIssuer(String issuerName) {
