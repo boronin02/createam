@@ -22,7 +22,11 @@ import java.util.Map;
 public class MoexService {
 
     private final SecurityRepository securityRepository;
-    private final RestClient restClient = RestClient.create();
+    private final RestClient restClient = RestClient.builder()
+            .defaultHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+            .defaultHeader("Accept", "application/json")
+            .build();
+
 
     // СИНХРОНИЗАЦИЯ ТЕКУЩИХ КОТИРОВОК
     public int syncStocksAndEtfs() { return syncMarket("shares", "TQBR", 1); }
@@ -101,17 +105,24 @@ public class MoexService {
         List<CandleDto> candles = new ArrayList<>();
 
         try {
+            String cleanTicker = ticker.toUpperCase().trim();
+
+            // Получаем id_type из БД (1 - акция, 2 - облигация, 3 - ETF)
+            Integer typeId = securityRepository.getSecurityTypeId(cleanTicker);
+
+            // Для облигаций (2) берем рынок bonds и борд TQCB, для акций (1) и ETF (3) - shares и TQBR
+            String market = (typeId != null && typeId == 2) ? "bonds" : "shares";
+            String board = (typeId != null && typeId == 2) ? "TQCB" : "TQBR";
+
             String fromDate = (from != null && !from.isEmpty()) ? from : LocalDate.now().minusDays(30).toString();
             String tillDate = (till != null && !till.isEmpty()) ? till : LocalDate.now().toString();
             String intervalParam = (interval != null && !interval.isEmpty()) ? interval : "24";
 
-            // Формируем URL как простую строку
+            // Формируем полный URL с указанием движка, рынка и режима торгов
             String url = String.format(
-                    "https://iss.moex.com/iss/securities/%s/candles.json?from=%s&till=%s&interval=%s&iss.meta=off",
-                    ticker, fromDate, tillDate, intervalParam
-            );
+                    "https://iss.moex.com/iss/engines/stock/markets/%s/boards/%s/securities/%s/candles.json?from=%s&till=%s&interval=%s&iss.meta=off",
+                    market, board, cleanTicker, fromDate, tillDate, intervalParam);
 
-            // Используем URI.create, чтобы Spring не ломал строку
             String jsonResponse = restClient.get().uri(URI.create(url)).retrieve().body(String.class);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -135,7 +146,7 @@ public class MoexService {
                 if (!row.get(openIdx).isNull()) {
                     String beginStr = row.get(beginIdx).asText();
                     if ("24".equals(intervalParam) || "7".equals(intervalParam) || "31".equals(intervalParam)) {
-                        beginStr = beginStr.substring(0, 10); // Оставляем только дату
+                        beginStr = beginStr.substring(0, 10); // Оставляем только дату (YYYY-MM-DD)
                     }
 
                     candles.add(new CandleDto(
@@ -155,6 +166,7 @@ public class MoexService {
 
         return candles;
     }
+
 
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ И ПЛАНИРОВЩИК
     private int getColumnIndex(JsonNode columnsNode, String columnName) {

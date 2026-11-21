@@ -87,4 +87,11 @@ public class SecurityRepository {
                 rs.getString("currency_code")
         );
     }
+
+    public Integer getSecurityTypeId(String ticker) {
+        String sql = "SELECT id_type FROM securities WHERE ticker = ? LIMIT 1";
+        List<Integer> types = jdbcTemplate.queryForList(sql, Integer.class, ticker);
+        return types.isEmpty() ? 1 : types.get(0);
+    }
+
 }
