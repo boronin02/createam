@@ -27,4 +27,16 @@ public class AccountRepository {
                 rs.getString("code")
         ), username);
     }
+
+    // Проверяет, есть ли у пользователя такой счет
+    public boolean isAccountOwnedByUser(Long accountId, String username) {
+        String sql = """
+                SELECT COUNT(*) 
+                FROM account a
+                JOIN participants p ON p.id_investor = a.id_investor
+                WHERE a.id_account = ? AND p.username = ?
+                """;
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, accountId, username);
+        return count != null && count > 0;
+    }
 }
