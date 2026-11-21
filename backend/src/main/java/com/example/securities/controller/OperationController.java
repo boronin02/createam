@@ -31,6 +31,7 @@ public class OperationController {
             operationRepository.createOperation(request);
             return ResponseEntity.status(HttpStatus.CREATED).body("Операция успешно добавлена, портфель обновлен триггером!");
         } catch (Exception e) {
+            System.out.println(e.getMessage() + "ЭТО ОШИБКА!!!!");
             return ResponseEntity.badRequest().body("Ошибка при создании операции: " + e.getMessage());
         }
     }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -16,13 +17,13 @@ public class ReportController {
     private final ReportRepository reportRepository;
 
     @GetMapping("/operations")
-    public List<Map<String, Object>> getOperationHistory() {
-        return reportRepository.getOperationHistory();
+    public List<Map<String, Object>> getOperationHistory(Principal principal) {
+        return reportRepository.getOperationHistory(principal.getName());
     }
 
     @GetMapping("/incomes")
-    public List<Map<String, Object>> getIncomeSummary() {
-        return reportRepository.getIncomeSummary();
+    public List<Map<String, Object>> getIncomeSummary(Principal principal) {
+        return reportRepository.getIncomeSummary(principal.getName());
     }
 
     @GetMapping("/freshness")
@@ -31,7 +32,7 @@ public class ReportController {
     }
 
     @GetMapping("/commissions")
-    public List<Map<String, Object>> getCommissionsByDay() {
-        return reportRepository.getCommissionsByDay();
+    public List<Map<String, Object>> getCommissionsByDay(Principal principal) {
+        return reportRepository.getCommissionsByDay(principal.getName());
     }
 }

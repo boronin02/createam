@@ -12,19 +12,41 @@ import java.util.Map;
 public class ReportRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public List<Map<String, Object>> getOperationHistory() {
-        return jdbcTemplate.queryForList("SELECT * FROM v_operation_history ORDER BY operation_date DESC");
+    public List<Map<String, Object>> getOperationHistory(String username) {
+        String sql = """
+                SELECT v.* FROM v_operation_history v
+                JOIN account a ON v.account_number = a.account_number
+                JOIN participants p ON a.id_investor = p.id_investor
+                WHERE p.username = ?
+                ORDER BY v.operation_date DESC
+                """;
+        return jdbcTemplate.queryForList(sql, username);
     }
 
-    public List<Map<String, Object>> getIncomeSummary() {
-        return jdbcTemplate.queryForList("SELECT * FROM v_income_summary ORDER BY payment_date DESC");
+    public List<Map<String, Object>> getIncomeSummary(String username) {
+        String sql = """
+                SELECT v.* FROM v_income_summary v
+                JOIN account a ON v.account_number = a.account_number
+                JOIN participants p ON a.id_investor = p.id_investor
+                WHERE p.username = ?
+                ORDER BY v.payment_date DESC
+                """;
+        return jdbcTemplate.queryForList(sql, username);
     }
 
     public List<Map<String, Object>> getMarketDataFreshness() {
+        // Тут нет приватных данных, это публичная инфа по бумагам. Оставляем как есть.
         return jdbcTemplate.queryForList("SELECT * FROM v_market_data_freshness");
     }
 
-    public List<Map<String, Object>> getCommissionsByDay() {
-        return jdbcTemplate.queryForList("SELECT * FROM v_commissions_by_day ORDER BY day DESC");
+    public List<Map<String, Object>> getCommissionsByDay(String username) {
+        String sql = """
+                SELECT v.* FROM v_commissions_by_day v
+                JOIN account a ON v.account_number = a.account_number
+                JOIN participants p ON a.id_investor = p.id_investor
+                WHERE p.username = ?
+                ORDER BY v.day DESC
+                """;
+        return jdbcTemplate.queryForList(sql, username);
     }
 }
