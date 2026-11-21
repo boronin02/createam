@@ -39,4 +39,20 @@ public class AccountRepository {
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, accountId, username);
         return count != null && count > 0;
     }
+
+    public Long createAccount(String username, String accountNumber, String name, Integer currencyId) {
+        // Получаем ID инвестора по его логину
+        String getInvestorSql = "SELECT id_investor FROM participants WHERE username = ?";
+        Long investorId = jdbcTemplate.queryForObject(getInvestorSql, Long.class, username);
+
+        // Сохраняем в БД и возвращаем новый ID
+        String insertSql = "INSERT INTO account (account_number, id_investor, id_currency, name) VALUES (?, ?, ?, ?) RETURNING id_account";
+        return jdbcTemplate.queryForObject(insertSql, Long.class, accountNumber, investorId, currencyId, name);
+    }
+
+    // Удаление счета
+    public void deleteAccount(Long accountId) {
+        String sql = "DELETE FROM account WHERE id_account = ?";
+        jdbcTemplate.update(sql, accountId);
+    }
 }
