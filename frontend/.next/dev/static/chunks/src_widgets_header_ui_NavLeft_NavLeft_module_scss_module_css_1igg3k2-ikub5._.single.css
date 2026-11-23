@@ -1,0 +1,36 @@
+/* [project]/src/widgets/header/ui/NavLeft/NavLeft.module.scss.module.css [app-client] (css) */
+.NavLeft-module-scss-module__rQ9Rrq__list {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+  display: flex;
+}
+
+.NavLeft-module-scss-module__rQ9Rrq__text {
+  cursor: pointer;
+  color: #9b9b9b;
+  letter-spacing: -.05em;
+  text-transform: uppercase;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  font-size: 25px;
+}
+
+.NavLeft-module-scss-module__rQ9Rrq__text a {
+  outline: none;
+}
+
+.NavLeft-module-scss-module__rQ9Rrq__inner {
+  color: inherit;
+  text-decoration: none;
+  transition: color .25s;
+  display: inline-block;
+}
+
+.NavLeft-module-scss-module__rQ9Rrq__text:hover .NavLeft-module-scss-module__rQ9Rrq__inner {
+  color: #fff;
+}
+
+/*# sourceMappingURL=src_widgets_header_ui_NavLeft_NavLeft_module_scss_module_css_1igg3k2-ikub5._.single.css.map*/

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Clock } from "../Clock/Clock";
 import styles from "./NavRigth.module.scss";
 
@@ -7,7 +8,9 @@ export const NavRigth = () => {
       <nav className={styles.nav}>
         <ul className={styles.list}>
           <li className={styles.text}>
-            <span className={styles.inner}>Войти</span>
+            <Link href="/auth" className={styles.inner}>
+              Войти
+            </Link>
           </li>
           <li className={styles.text}>
             <Clock />

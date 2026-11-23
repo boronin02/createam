@@ -1,0 +1,33 @@
+/* [project]/src/pages/home/ui/HomePage.module.scss.module.css [app-client] (css) */
+.HomePage-module-scss-module__u4kK-G__page {
+  color: #fff;
+  min-height: calc(100vh - 68px);
+  padding: 24px;
+  overflow: hidden;
+}
+
+.HomePage-module-scss-module__u4kK-G__hero {
+  text-align: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  min-height: 60vh;
+  display: flex;
+}
+
+.HomePage-module-scss-module__u4kK-G__title {
+  letter-spacing: -.05em;
+  text-transform: uppercase;
+  margin: 0;
+  font-size: 90px;
+}
+
+.HomePage-module-scss-module__u4kK-G__subtitle {
+  color: #9b9b9b;
+  max-width: 600px;
+  margin: 0;
+  font-size: 24px;
+}
+
+/*# sourceMappingURL=src_pages_home_ui_HomePage_module_scss_module_0oxm691w5lb2w.css.map*/

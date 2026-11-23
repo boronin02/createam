@@ -1,39 +1,36 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import styles from "./Clock.module.scss";
 
-const formatDate = (date: Date) => {
-  const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-  const months = [
-    "JAN",
-    "FEB",
-    "MAR",
-    "APR",
-    "MAY",
-    "JUN",
-    "JUL",
-    "AUG",
-    "SEP",
-    "OCT",
-    "NOV",
-    "DEC",
-  ];
-
-  const day = days[date.getDay()];
-  const dateNum = date.getDate();
-  const month = months[date.getMonth()];
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-
-  return `${day} ${dateNum} ${month} AT ${hours}:${minutes}`;
-};
-
-export const Clock = () => {
-  const [now, setNow] = useState(new Date());
+export function Clock() {
+  const [time, setTime] = useState("");
 
   useEffect(() => {
-    const interval = setInterval(() => setNow(new Date()), 60_000);
+    const updateTime = () => {
+      const now = new Date();
+
+      const formatted = now
+        .toLocaleString("en-US", {
+          weekday: "short",
+          day: "2-digit",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })
+        .toUpperCase()
+        .replace(",", " AT");
+
+      setTime(formatted);
+    };
+
+    updateTime();
+
+    const interval = setInterval(updateTime, 1000);
+
     return () => clearInterval(interval);
   }, []);
 
-  return <span className={styles.clock}>{formatDate(now)}</span>;
-};
+  return <span className={styles.clock}>{time || "LOADING..."}</span>;
+}

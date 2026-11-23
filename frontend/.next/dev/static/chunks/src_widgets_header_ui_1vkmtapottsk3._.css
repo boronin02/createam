@@ -1,0 +1,77 @@
+/* [project]/src/widgets/header/ui/NavLeft/NavLeft.module.scss.module.css [app-client] (css) */
+.NavLeft-module-scss-module__rQ9Rrq__list {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+  display: flex;
+}
+
+.NavLeft-module-scss-module__rQ9Rrq__text {
+  cursor: pointer;
+  color: #9b9b9b;
+  letter-spacing: -.05em;
+  text-transform: uppercase;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  font-size: 25px;
+}
+
+.NavLeft-module-scss-module__rQ9Rrq__text a {
+  outline: none;
+}
+
+.NavLeft-module-scss-module__rQ9Rrq__inner {
+  color: inherit;
+  text-decoration: none;
+  transition: color .25s;
+  display: inline-block;
+}
+
+.NavLeft-module-scss-module__rQ9Rrq__text:hover .NavLeft-module-scss-module__rQ9Rrq__inner {
+  color: #fff;
+}
+
+/* [project]/src/widgets/header/ui/Clock/Clock.module.scss.module.css [app-client] (css) */
+.Clock-module-scss-module__grlHqG__clock {
+  color: #9b9b9b;
+  letter-spacing: -.05em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  font-size: 25px;
+}
+
+/* [project]/src/widgets/header/ui/NavRigth/NavRigth.module.scss.module.css [app-client] (css) */
+.NavRigth-module-scss-module__K04gCa__list {
+  flex-direction: row;
+  gap: 6px;
+  display: flex;
+}
+
+.NavRigth-module-scss-module__K04gCa__inner {
+  color: #9b9b9b;
+  letter-spacing: -.05em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  font-size: 25px;
+}
+
+.NavRigth-module-scss-module__K04gCa__text:hover .NavRigth-module-scss-module__K04gCa__inner {
+  color: #fff;
+  transition: color .25s;
+}
+
+/* [project]/src/widgets/header/ui/Header/Header.module.scss.module.css [app-client] (css) */
+.Header-module-scss-module__5mBCua__header {
+  z-index: 10;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 20px;
+  font-family: MyArialNarrow, Arial Narrow, Liberation Sans Narrow, Arial, sans-serif;
+  display: flex;
+}
+
+/*# sourceMappingURL=src_widgets_header_ui_1vkmtapottsk3._.css.map*/

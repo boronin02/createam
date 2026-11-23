@@ -12,11 +12,19 @@
     color: #9b9b9b;
     letter-spacing: -0.05em;
     text-transform: uppercase;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    a {
+        outline: none;
+    }
 }
 
 .inner {
     display: inline-block;
+    text-decoration: none;
     transition: color 0.25s ease;
+    color: inherit;
 }
 
 .text:hover .inner {
