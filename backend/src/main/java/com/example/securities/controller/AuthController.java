@@ -5,10 +5,14 @@ import com.example.securities.dto.LoginRequest;
 import com.example.securities.dto.RegisterRequest;
 import com.example.securities.repository.UserRepository;
 import com.example.securities.service.AuthService;
+import jakarta.persistence.PostUpdate;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.Update;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.util.Locale;
 import java.util.Map;
 
 @RestController
@@ -33,12 +37,23 @@ public class AuthController {
         if (principal == null) {
             return ResponseEntity.status(401).body("Не авторизован");
         }
-        // principal.getName() вернет нам username из токена
+        // principal.getName() вернет username из токена
         Map<String, Object> user = userRepository.findByUsername(principal.getName());
 
         if (user != null) {
-            user.remove("password_hash"); // Никогда не отдаем хэш пароля наружу!
+            user.remove("password_hash");
         }
         return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<String> updateProfile(@RequestBody Map<String, String> request, Principal principal) {
+        userRepository.updateUser(
+                principal.getName(),
+                request.get("firstName"), request.get("lastName"),
+                request.get("email"), request.get("phone"), request.get("inn")
+        );
+
+        return ResponseEntity.ok("Профиль обновлён");
     }
 }

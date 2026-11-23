@@ -55,4 +55,8 @@ public class AccountRepository {
         String sql = "DELETE FROM account WHERE id_account = ?";
         jdbcTemplate.update(sql, accountId);
     }
+
+    public void updateAccountName(Long id, String newName) {
+        jdbcTemplate.update("UPDATE account SET name = ? WHERE id_account = ?", newName, id);
+    }
 }

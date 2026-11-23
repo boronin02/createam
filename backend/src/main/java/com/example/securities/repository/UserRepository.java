@@ -32,4 +32,14 @@ public class UserRepository {
                 request.getLastName()
         );
     }
+
+    public void updateUser(String username, String firstName, String lastName, String email, String phone, String inn) {
+        String sql = """
+                UPDATE participants
+                SET first_name = ?, last_name = ?, email = ?, phone = ?, inn = ?
+                WHERE username = ?
+                """;
+        jdbcTemplate.update(sql,
+                firstName, lastName, email, phone, inn, username);
+    }
 }

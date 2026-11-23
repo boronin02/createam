@@ -1,0 +1,10 @@
+package com.example.securities.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class AccountUpdateRequest {
+    private String name;
+}

@@ -2,6 +2,7 @@ package com.example.securities.controller;
 
 import com.example.securities.dto.AccountCreateRequest;
 import com.example.securities.dto.AccountDto;
+import com.example.securities.dto.AccountUpdateRequest;
 import com.example.securities.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/accounts")
@@ -45,5 +47,16 @@ public class AccountController {
             // Перехватываем ошибку БД (RESTRICT), если на счете есть операции/активы
             return ResponseEntity.badRequest().body("Невозможно удалить счет: по нему уже есть активы или история операций.");
         }
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<String> updateAccountName(@PathVariable Long id, @RequestBody AccountUpdateRequest request,
+                                                    Principal principal) {
+        if (!accountRepository.isAccountOwnedByUser(id, principal.getName())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Доступ запрещен: вы не владелец этого счета");
+        }
+
+        accountRepository.updateAccountName(id, request.getName());
+        return ResponseEntity.ok("Название счёта обновлено");
     }
 }
