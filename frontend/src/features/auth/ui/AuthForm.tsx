@@ -4,6 +4,8 @@ import { useState } from "react";
 import axios from "axios";
 import styles from "./AuthForm.module.scss";
 import { authApi } from "@/entities/auth/api/authApi";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/entities/auth/model/AuthContext";
 
 type AuthMode = "login" | "register";
 
@@ -17,7 +19,9 @@ type FormData = {
 };
 
 export function AuthForm() {
+  const router = useRouter();
   const [mode, setMode] = useState<AuthMode>("login");
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState<FormData>({
     username: "12345",
@@ -48,11 +52,11 @@ export function AuthForm() {
     e.preventDefault();
     setError("");
 
-    if (mode === "register") {
-      if (formData.password !== formData.confirmPassword) {
-        setError("Пароли не совпадают");
-        return;
-      }
+    if (isSubmitting) return;
+
+    if (mode === "register" && formData.password !== formData.confirmPassword) {
+      setError("Пароли не совпадают");
+      return;
     }
 
     setIsSubmitting(true);
@@ -68,26 +72,36 @@ export function AuthForm() {
         });
 
         setMode("login");
+
         setFormData((prev) => ({
           ...prev,
           email: "",
           confirmPassword: "",
         }));
-      } else {
-        const response = await authApi.login({
-          username: formData.username,
-          password: formData.password,
-        });
 
-        console.log("Авторизация успешна:", response);
+        return;
       }
+
+      const response = await authApi.login({
+        username: formData.username,
+        password: formData.password,
+      });
+
+      if (!response.token) {
+        throw new Error("Сервер не вернул токен авторизации");
+      }
+
+      login(response.token, formData.username);
+      router.replace("/dashboard");
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(
           err.response?.data?.message || "Ошибка при обращении к серверу",
         );
       } else {
-        setError("Произошла неизвестная ошибка");
+        setError(
+          err instanceof Error ? err.message : "Произошла неизвестная ошибка",
+        );
       }
     } finally {
       setIsSubmitting(false);
@@ -169,7 +183,7 @@ export function AuthForm() {
                   name="firstNane"
                   type="text"
                   placeholder="Имя"
-                  value={formData.confirmPassword}
+                  value={formData.firstName}
                   onChange={handleChange}
                   required
                 />
@@ -182,7 +196,7 @@ export function AuthForm() {
                   name="lastName"
                   type="text"
                   placeholder="Фамилия"
-                  value={formData.confirmPassword}
+                  value={formData.lastName}
                   onChange={handleChange}
                   required
                 />

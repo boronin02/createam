@@ -1,4 +1,5 @@
 import { Header } from "@/widgets/header/ui/Header";
+import { Providers } from "./providers";
 import "@/shared/assets/styles/reset.scss";
 import "@/shared/assets/styles/global.scss";
 
@@ -10,8 +11,10 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body>
-        <Header />
-        <main>{children}</main>
+        <Providers>
+          <Header />
+          <main>{children}</main>
+        </Providers>
       </body>
     </html>
   );
