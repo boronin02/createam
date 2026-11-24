@@ -1,0 +1,11 @@
+.app {
+  position: relative;
+  min-height: 100vh;
+  isolation: isolate;     // z-index не утекает наружу
+  background: #0b1118;    // тёмный фон, пока картинка грузится
+}
+
+.content {
+  position: relative;
+  z-index: 1;             // шапка + страницы поверх фона
+}

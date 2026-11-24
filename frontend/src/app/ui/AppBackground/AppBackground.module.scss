@@ -1,0 +1,172 @@
+.bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.cam {
+    position: absolute;
+    inset: 0;
+    opacity: 0.1;
+    background: url("./assets/home-bg.jpg") center / cover no-repeat;
+    animation: drift 22s ease-in-out infinite alternate;
+    transform-origin: 60% 55%;
+}
+
+@keyframes drift {
+    from {
+        transform: scale(1) translate(0, 0);
+    }
+    to {
+        transform: scale(1.07) translate(-1.2%, 0.8%);
+    }
+}
+
+.steam {
+    position: absolute;
+    left: 55.5%;
+    top: 44%;
+    width: 5%;
+    height: 20%;
+
+    i {
+        position: absolute;
+        bottom: 0;
+        left: 30%;
+        width: 40%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.55),
+            rgba(255, 255, 255, 0) 70%
+        );
+        filter: blur(6px);
+        opacity: 0;
+        animation: rise 5s ease-in infinite;
+
+        &:nth-child(2) {
+            animation-delay: 1.2s;
+            left: 15%;
+        }
+        &:nth-child(3) {
+            animation-delay: 2.4s;
+            left: 45%;
+        }
+        &:nth-child(4) {
+            animation-delay: 3.6s;
+            left: 25%;
+        }
+    }
+}
+
+@keyframes rise {
+    0% {
+        transform: translate(0, 0) scale(0.5);
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.7;
+    }
+    60% {
+        transform: translate(25%, -260%) scale(1.6);
+        opacity: 0.35;
+    }
+    100% {
+        transform: translate(-20%, -520%) scale(2.6);
+        opacity: 0;
+    }
+}
+
+.holo {
+    position: absolute;
+    left: 30%;
+    top: 5%;
+    width: 70%;
+    height: 75%;
+    mix-blend-mode: screen;
+    background: radial-gradient(
+        ellipse at 70% 40%,
+        rgba(120, 220, 255, 0.22),
+        transparent 60%
+    );
+    animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 0.25;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.scan {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 8%;
+    left: 30%;
+    mix-blend-mode: screen;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(150, 230, 255, 0.28),
+        transparent
+    );
+    animation: sweep 7s linear infinite;
+}
+
+@keyframes sweep {
+    from {
+        transform: translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    to {
+        transform: translateX(780%);
+        opacity: 0;
+    }
+}
+
+.glint {
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: soft-light;
+    background: linear-gradient(
+        110deg,
+        transparent 40%,
+        rgba(255, 255, 255, 0.5) 50%,
+        transparent 60%
+    );
+    background-size: 250% 100%;
+    animation: glint 9s ease-in-out infinite;
+}
+
+@keyframes glint {
+    from {
+        background-position: 120% 0;
+    }
+    to {
+        background-position: -120% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cam,
+    .steam i,
+    .holo,
+    .scan,
+    .glint {
+        animation: none !important;
+    }
+}
