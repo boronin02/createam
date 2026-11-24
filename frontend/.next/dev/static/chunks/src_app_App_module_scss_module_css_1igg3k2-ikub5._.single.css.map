@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["turbopack:///turbopack:///[project]/src/app/App.module.scss"],"sourcesContent":[".app {\n  position: relative;\n  min-height: 100vh;\n  isolation: isolate;     // z-index не утекает наружу\n  background: #0b1118;    // тёмный фон, пока картинка грузится\n}\n\n.content {\n  position: relative;\n  z-index: 1;             // шапка + страницы поверх фона\n}\n"],"names":[],"mappings":"AAAA;;;;;;;AAOA"}}]
-}

@@ -11,10 +11,19 @@ export const NavLeft = () => {
           </Link>
         </li>
         <li className={styles.text}>
-          <span className={styles.inner}>БИРЖА</span>
+          <Link href="/dashboard">
+            <span className={styles.inner}>БИРЖА</span>
+          </Link>
         </li>
         <li className={styles.text}>
-          <span className={styles.inner}>ПОРТФЕЛЬ</span>
+          <Link href="/portfolio">
+            <span className={styles.inner}>ПОРТФЕЛЬ</span>
+          </Link>
+        </li>
+        <li className={styles.text}>
+          <Link href="/reports">
+            <span className={styles.inner}>ОТЧЁТЫ</span>
+          </Link>
         </li>
       </ul>
     </nav>

@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["turbopack:///turbopack:///[project]/src/widgets/header/ui/Header/Header.module.scss"],"sourcesContent":[".header {\n    font-family:\n        \"MyArialNarrow\", \"Arial Narrow\", \"Liberation Sans Narrow\", Arial,\n        sans-serif;\n    padding: 20px;\n    display: flex;\n    flex-direction: row;\n    justify-content: space-between;\n    z-index: 10;\n}\n"],"names":[],"mappings":"AAAA"}}]
-}
