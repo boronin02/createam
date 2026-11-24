@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["turbopack:///turbopack:///[project]/src/widgets/header/ui/Clock/Clock.module.scss"],"sourcesContent":[".clock {\n    font-size: 25px;\n    color: #9b9b9b;\n    letter-spacing: -0.05em;\n    text-transform: uppercase;\n    font-variant-numeric: tabular-nums;\n    cursor: pointer;\n}\n"],"names":[],"mappings":"AAAA"}}]
+}

@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["turbopack:///turbopack:///[project]/src/widgets/header/ui/NavLeft/NavLeft.module.scss"],"sourcesContent":[".list {\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    gap: 6px;\n    list-style: none;\n}\n\n.text {\n    cursor: pointer;\n    font-size: 25px;\n    color: #9b9b9b;\n    letter-spacing: -0.05em;\n    text-transform: uppercase;\n    user-select: none;\n    -webkit-user-select: none;\n    -webkit-tap-highlight-color: transparent;\n    a {\n        outline: none;\n    }\n}\n\n.inner {\n    display: inline-block;\n    text-decoration: none;\n    transition: color 0.25s ease;\n    color: inherit;\n}\n\n.text:hover .inner {\n    color: #fff;\n}\n"],"names":[],"mappings":"AAAA;;;;;;;;AAQA;;;;;;;;;;;AASI;;;;AAKJ;;;;;;;AAOA"}}]
+}

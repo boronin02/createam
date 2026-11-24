@@ -1,0 +1,372 @@
+/* [project]/src/widgets/header/ui/NavLeft/NavLeft.module.scss.module.css [app-client] (css) */
+.NavLeft-module-scss-module__rQ9Rrq__list {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+  display: flex;
+}
+
+.NavLeft-module-scss-module__rQ9Rrq__text {
+  cursor: pointer;
+  color: #9b9b9b;
+  letter-spacing: -.05em;
+  text-transform: uppercase;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  font-size: 25px;
+}
+
+.NavLeft-module-scss-module__rQ9Rrq__text a {
+  outline: none;
+}
+
+.NavLeft-module-scss-module__rQ9Rrq__inner {
+  color: inherit;
+  text-decoration: none;
+  transition: color .25s;
+  display: inline-block;
+}
+
+.NavLeft-module-scss-module__rQ9Rrq__text:hover .NavLeft-module-scss-module__rQ9Rrq__inner {
+  color: #fff;
+}
+
+/* [project]/src/widgets/header/ui/Clock/Clock.module.scss.module.css [app-client] (css) */
+.Clock-module-scss-module__grlHqG__clock {
+  color: #9b9b9b;
+  letter-spacing: -.05em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  font-size: 25px;
+}
+
+/* [project]/src/widgets/header/ui/NavRigth/NavRigth.module.scss.module.css [app-client] (css) */
+.NavRigth-module-scss-module__K04gCa__list {
+  flex-direction: row;
+  gap: 6px;
+  display: flex;
+}
+
+.NavRigth-module-scss-module__K04gCa__inner {
+  color: #9b9b9b;
+  letter-spacing: -.05em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  font-size: 25px;
+}
+
+.NavRigth-module-scss-module__K04gCa__text:hover .NavRigth-module-scss-module__K04gCa__inner {
+  color: #fff;
+  transition: color .25s;
+}
+
+/* [project]/src/widgets/header/ui/Header/Header.module.scss.module.css [app-client] (css) */
+.Header-module-scss-module__5mBCua__header {
+  z-index: 10;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 20px;
+  font-family: MyArialNarrow, Arial Narrow, Liberation Sans Narrow, Arial, sans-serif;
+  display: flex;
+}
+
+/* [project]/src/app/ui/AppBackground/AppBackground.module.scss.module.css [app-client] (css) */
+.AppBackground-module-scss-module__gHt_NG__bg {
+  z-index: 0;
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.AppBackground-module-scss-module__gHt_NG__cam {
+  opacity: .1;
+  transform-origin: 60% 55%;
+  background: url("../media/home-bg.2-_bb5vnbbml2.jpg") center / cover no-repeat;
+  animation: 22s ease-in-out infinite alternate AppBackground-module-scss-module__gHt_NG__drift;
+  position: absolute;
+  inset: 0;
+}
+
+@keyframes AppBackground-module-scss-module__gHt_NG__drift {
+  from {
+    transform: scale(1) translate(0);
+  }
+
+  to {
+    transform: scale(1.07) translate(-1.2%, .8%);
+  }
+}
+
+.AppBackground-module-scss-module__gHt_NG__steam {
+  width: 5%;
+  height: 20%;
+  position: absolute;
+  top: 44%;
+  left: 55.5%;
+}
+
+.AppBackground-module-scss-module__gHt_NG__steam i {
+  aspect-ratio: 1;
+  filter: blur(6px);
+  opacity: 0;
+  background: radial-gradient(circle, #ffffff8c, #fff0 70%);
+  border-radius: 50%;
+  width: 40%;
+  animation: 5s ease-in infinite AppBackground-module-scss-module__gHt_NG__rise;
+  position: absolute;
+  bottom: 0;
+  left: 30%;
+}
+
+.AppBackground-module-scss-module__gHt_NG__steam i:nth-child(2) {
+  animation-delay: 1.2s;
+  left: 15%;
+}
+
+.AppBackground-module-scss-module__gHt_NG__steam i:nth-child(3) {
+  animation-delay: 2.4s;
+  left: 45%;
+}
+
+.AppBackground-module-scss-module__gHt_NG__steam i:nth-child(4) {
+  animation-delay: 3.6s;
+  left: 25%;
+}
+
+@keyframes AppBackground-module-scss-module__gHt_NG__rise {
+  0% {
+    opacity: 0;
+    transform: translate(0) scale(.5);
+  }
+
+  20% {
+    opacity: .7;
+  }
+
+  60% {
+    opacity: .35;
+    transform: translate(25%, -260%) scale(1.6);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-20%, -520%) scale(2.6);
+  }
+}
+
+.AppBackground-module-scss-module__gHt_NG__holo {
+  mix-blend-mode: screen;
+  background: radial-gradient(at 70% 40%, #78dcff38, #0000 60%);
+  width: 70%;
+  height: 75%;
+  animation: 4s ease-in-out infinite AppBackground-module-scss-module__gHt_NG__pulse;
+  position: absolute;
+  top: 5%;
+  left: 30%;
+}
+
+@keyframes AppBackground-module-scss-module__gHt_NG__pulse {
+  0%, 100% {
+    opacity: .25;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.AppBackground-module-scss-module__gHt_NG__scan {
+  mix-blend-mode: screen;
+  background: linear-gradient(90deg, #0000, #96e6ff47, #0000);
+  width: 8%;
+  animation: 7s linear infinite AppBackground-module-scss-module__gHt_NG__sweep;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 30%;
+}
+
+@keyframes AppBackground-module-scss-module__gHt_NG__sweep {
+  from {
+    opacity: 0;
+    transform: translateX(0);
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(780%);
+  }
+}
+
+.AppBackground-module-scss-module__gHt_NG__glint {
+  mix-blend-mode: soft-light;
+  background: linear-gradient(110deg, #0000 40%, #ffffff80 50%, #0000 60%) 0 0 / 250% 100%;
+  animation: 9s ease-in-out infinite AppBackground-module-scss-module__gHt_NG__glint;
+  position: absolute;
+  inset: 0;
+}
+
+@keyframes AppBackground-module-scss-module__gHt_NG__glint {
+  from {
+    background-position: 120% 0;
+  }
+
+  to {
+    background-position: -120% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .AppBackground-module-scss-module__gHt_NG__cam, .AppBackground-module-scss-module__gHt_NG__steam i, .AppBackground-module-scss-module__gHt_NG__holo, .AppBackground-module-scss-module__gHt_NG__scan, .AppBackground-module-scss-module__gHt_NG__glint {
+    animation: none !important;
+  }
+}
+
+/* [project]/src/shared/assets/styles/global.scss.css [app-client] (css) */
+@font-face {
+  font-family: MyArialNarrow;
+  src: url("../media/ArialNarrow.2lts4rpiakuh-.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* [project]/src/shared/assets/styles/reset.scss.css [app-client] (css) */
+* {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+*, :before, :after {
+  box-sizing: border-box;
+}
+
+a, a:link, a:visited, a:hover {
+  text-decoration: none;
+}
+
+aside, nav, footer, header, section, main {
+  display: block;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+ul, ul li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+img, svg {
+  max-width: 100%;
+  height: auto;
+}
+
+address {
+  font-style: normal;
+}
+
+input, textarea, button, select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background-color: #0000;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button, input[type="submit"] {
+  box-shadow: none;
+  cursor: pointer;
+  background: none;
+  display: inline-block;
+}
+
+button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+label {
+  cursor: pointer;
+}
+
+legend {
+  display: block;
+}
+
+input[type="file"] {
+  max-width: 100%;
+}
+
+/* [project]/src/app/App.module.scss.module.css [app-client] (css) */
+.App-module-scss-module__Smp2Ca__app {
+  isolation: isolate;
+  background: #0b1118;
+  min-height: 100vh;
+  position: relative;
+}
+
+.App-module-scss-module__Smp2Ca__content {
+  z-index: 1;
+  position: relative;
+}
+
+/* [project]/src/pages/home/ui/HomePage.module.scss.module.css [app-client] (css) */
+.HomePage-module-scss-module__u4kK-G__page {
+  color: #fff;
+  min-height: calc(100vh - 68px);
+  padding: 24px;
+  overflow: hidden;
+}
+
+.HomePage-module-scss-module__u4kK-G__hero {
+  text-align: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  min-height: 60vh;
+  display: flex;
+}
+
+.HomePage-module-scss-module__u4kK-G__title {
+  letter-spacing: -.05em;
+  text-transform: uppercase;
+  margin: 0;
+  font-size: 90px;
+}
+
+.HomePage-module-scss-module__u4kK-G__subtitle {
+  color: #9b9b9b;
+  max-width: 600px;
+  margin: 0;
+  font-size: 24px;
+}
+
+/*# sourceMappingURL=src_14_jvn6yn_hff._.css.map*/

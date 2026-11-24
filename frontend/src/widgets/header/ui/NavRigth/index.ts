@@ -1,0 +1,1 @@
+export { NavRigth } from "./NavRigth";
