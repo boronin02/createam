@@ -25,6 +25,11 @@ export const NavLeft = () => {
             <span className={styles.inner}>ОТЧЁТЫ</span>
           </Link>
         </li>
+        <li className={styles.text}>
+          <Link href="/securities">
+            <span className={styles.inner}>Ценные бумаги</span>
+          </Link>
+        </li>
       </ul>
     </nav>
   );

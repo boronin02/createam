@@ -23,7 +23,7 @@ export const NavRigth = () => {
             <span className={styles.inner}>...</span>
           ) : user ? (
             <>
-              <Link href="/dashboard" className={styles.inner}>
+              <Link href="/account" className={styles.inner}>
                 {user.username}
               </Link>
 

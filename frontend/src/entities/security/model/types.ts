@@ -11,11 +11,17 @@ export type Security = {
   currencyCode: string;
 };
 
-export type SecurityHistory = {
+export type SecurityHistoryItem = {
   begin: string;
   open: number;
   high: number;
   low: number;
   close: number;
   volume: number;
+};
+
+export type SecurityHistoryParams = {
+  from?: string;
+  till?: string;
+  interval?: string;
 };

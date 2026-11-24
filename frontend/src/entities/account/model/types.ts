@@ -4,3 +4,9 @@ export type Account = {
   name: string;
   currencyCode: string;
 };
+
+export type CreateAccountDto = {
+  accountNumber: string;
+  name: string;
+  currencyId: number;
+};

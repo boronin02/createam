@@ -53,6 +53,12 @@ export function Portfolio() {
 
   // Модальное окно открытия счёта
   const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
+  const [accountNumber, setAccountNumber] = useState("");
+  const [accountName, setAccountName] = useState("");
+  const [currencyId, setCurrencyId] = useState("1");
+
+  const [accountCreating, setAccountCreating] = useState(false);
+  const [accountError, setAccountError] = useState("");
 
   // Форматирование денежных значений
   const formatMoney = (value: number) =>
@@ -406,6 +412,79 @@ export function Portfolio() {
   if (accountsLoading) {
     return <div className={styles.message}>Загрузка счетов...</div>;
   }
+
+  const handleCreateAccount = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setAccountError("Необходимо авторизоваться.");
+      return;
+    }
+
+    if (!accountNumber.trim() || !accountName.trim()) {
+      setAccountError("Заполните все поля.");
+      return;
+    }
+
+    setAccountCreating(true);
+    setAccountError("");
+
+    try {
+      const response = await accountApi.create(
+        {
+          accountNumber: accountNumber.trim(),
+          name: accountName.trim(),
+          currencyId: Number(currencyId),
+        },
+        token,
+      );
+
+      const updatedAccounts = await accountApi.getMyAccounts(token);
+
+      setAccounts(updatedAccounts);
+
+      if (updatedAccounts.length > 0) {
+        const newAccount = updatedAccounts.find(
+          (account) => account.accountNumber === accountNumber.trim(),
+        );
+
+        setSelectedAccountId(
+          newAccount?.idAccount ?? updatedAccounts[0].idAccount,
+        );
+      }
+
+      setIsCreateAccountOpen(false);
+      setAccountNumber("");
+      setAccountName("");
+      setCurrencyId("1");
+
+      setSuccess(
+        typeof response === "string" ? response : "Счёт успешно создан.",
+      );
+    } catch (err: unknown) {
+      console.error("Ошибка создания счёта:", err);
+
+      const message = (
+        err as {
+          response?: {
+            data?: string;
+          };
+        }
+      ).response?.data;
+
+      setAccountError(
+        typeof message === "string"
+          ? message
+          : "Не удалось создать счёт. Проверьте авторизацию и данные.",
+      );
+    } finally {
+      setAccountCreating(false);
+    }
+  };
 
   return (
     <section className={styles.portfolio}>
@@ -837,8 +916,9 @@ export function Portfolio() {
         <div
           className={styles.modalOverlay}
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
+            if (event.target === event.currentTarget && !accountCreating) {
               setIsCreateAccountOpen(false);
+              setAccountError("");
             }
           }}
         >
@@ -851,7 +931,11 @@ export function Portfolio() {
             <button
               type="button"
               className={styles.closeButton}
-              onClick={() => setIsCreateAccountOpen(false)}
+              onClick={() => {
+                setIsCreateAccountOpen(false);
+                setAccountError("");
+              }}
+              disabled={accountCreating}
               aria-label="Закрыть"
             >
               ×
@@ -861,15 +945,56 @@ export function Portfolio() {
               Открытие инвестиционного счёта
             </h2>
 
-            <p>Здесь будет форма создания нового инвестиционного счёта.</p>
+            <form className={styles.tradeForm} onSubmit={handleCreateAccount}>
+              <label htmlFor="accountNumber">Номер счёта</label>
 
-            <button
-              type="button"
-              className={styles.buyButton}
-              onClick={() => setIsCreateAccountOpen(false)}
-            >
-              Закрыть
-            </button>
+              <input
+                id="accountNumber"
+                type="text"
+                value={accountNumber}
+                onChange={(event) => setAccountNumber(event.target.value)}
+                placeholder="Например, 4081781050000000003"
+                required
+                disabled={accountCreating}
+              />
+
+              <label htmlFor="accountName">Название счёта</label>
+
+              <input
+                id="accountName"
+                type="text"
+                value={accountName}
+                onChange={(event) => setAccountName(event.target.value)}
+                placeholder="Мой брокерский счёт"
+                required
+                disabled={accountCreating}
+              />
+
+              <label htmlFor="currencyId">Валюта счёта</label>
+
+              <select
+                id="currencyId"
+                value={currencyId}
+                onChange={(event) => setCurrencyId(event.target.value)}
+                disabled={accountCreating}
+              >
+                <option value="1">Российский рубль (RUB)</option>
+                <option value="2">Доллар США (USD)</option>
+                <option value="3">Китайский юань (CNY)</option>
+              </select>
+
+              {accountError && (
+                <div className={styles.error}>{accountError}</div>
+              )}
+
+              <button
+                type="submit"
+                className={styles.buyButton}
+                disabled={accountCreating}
+              >
+                {accountCreating ? "Создание счёта..." : "Открыть счёт"}
+              </button>
+            </form>
           </div>
         </div>
       )}
