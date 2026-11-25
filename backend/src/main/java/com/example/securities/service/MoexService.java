@@ -20,10 +20,7 @@ import java.net.http.HttpClient;
 import java.security.KeyStore;
 import java.security.cert.CertificateFactory;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +28,10 @@ public class MoexService {
 
     private final SecurityRepository securityRepository;
     private final RestClient restClient = createMoexRestClient();
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    // Допустимые интервалы MOEX ISS: 1м, 10м, 1ч, 1д, 1н, 1мес
+    private static final Set<String> VALID_INTERVALS = Set.of("1", "10", "60", "24", "7", "31");
 
     // СИНХРОНИЗАЦИЯ ТЕКУЩИХ КОТИРОВОК
     public int syncStocksAndEtfs() { return syncMarket("shares", "TQBR", 1); }
@@ -48,7 +49,6 @@ public class MoexService {
         try {
             String url = String.format("https://iss.moex.com/iss/engines/stock/markets/%s/boards/%s/securities.json", market, board);
             String jsonResponse = restClient.get().uri(URI.create(url)).retrieve().body(String.class);
-            ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(jsonResponse);
 
             Map<String, BigDecimal> lastPrices = new HashMap<>();
@@ -77,16 +77,20 @@ public class MoexService {
             if (secSecIdIdx != -1 && secShortNameIdx != -1) {
                 for (JsonNode row : secData.path("data")) {
                     String ticker = row.get(secSecIdIdx).asText();
+                    BigDecimal lastPrice = lastPrices.get(ticker);
 
-                    if (!lastPrices.containsKey(ticker)) continue;
+                    if (lastPrice == null) continue;
 
                     String shortName = row.get(secShortNameIdx).asText();
-                    String isin = (secIsinIdx != -1 && !row.get(secIsinIdx).isNull()) ? row.get(secIsinIdx).asText() : null;
-                    BigDecimal prevPrice = (secPrevPriceIdx != -1 && !row.get(secPrevPriceIdx).isNull())
-                            ? new BigDecimal(row.get(secPrevPriceIdx).asText())
-                            : lastPrices.get(ticker);
+                    String isin = (secIsinIdx != -1 && !row.get(secIsinIdx).isNull())
+                            ? row.get(secIsinIdx).asText()
+                            : null;
 
-                    // Логика определения типа: если это не облигация, проверяем на ETF
+                    BigDecimal prevPrice = (secPrevPriceIdx != -1) ? parseBigDecimal(row.get(secPrevPriceIdx)) : null;
+                    if (prevPrice == null) {
+                        prevPrice = lastPrice;
+                    }
+
                     int finalTypeId = defaultTypeId;
                     String upperName = shortName.toUpperCase();
                     if (defaultTypeId == 1 && (upperName.contains("ETF") || upperName.contains("ПИФ"))) {
@@ -94,7 +98,7 @@ public class MoexService {
                     }
 
                     securityRepository.upsertSecurityFromMoex(
-                            ticker, shortName, isin, lastPrices.get(ticker), prevPrice, finalTypeId
+                            ticker, shortName, isin, lastPrice, prevPrice, finalTypeId
                     );
                     updatedCount++;
                 }
@@ -112,26 +116,26 @@ public class MoexService {
 
         try {
             String cleanTicker = ticker.toUpperCase().trim();
-
-            // Получаем id_type из БД (1 - акция, 2 - облигация, 3 - ETF)
             Integer typeId = securityRepository.getSecurityTypeId(cleanTicker);
 
-            // Для облигаций (2) берем рынок bonds и борд TQCB, для акций (1) и ETF (3) - shares и TQBR
             String market = (typeId != null && typeId == 2) ? "bonds" : "shares";
             String board = (typeId != null && typeId == 2) ? "TQCB" : "TQBR";
 
-            String fromDate = (from != null && !from.isEmpty()) ? from : LocalDate.now().minusDays(30).toString();
-            String tillDate = (till != null && !till.isEmpty()) ? till : LocalDate.now().toString();
-            String intervalParam = (interval != null && !interval.isEmpty()) ? interval : "24";
+            // Валидируем интервал (по умолчанию "24" - 1 день)
+            String intervalParam = (interval != null && VALID_INTERVALS.contains(interval.trim()))
+                    ? interval.trim()
+                    : "24";
 
-            // Формируем полный URL с указанием движка, рынка и режима торгов
+            // Автоподбор даты начала графика под выбранный интервал, если from не передан
+            String fromDate = (from != null && !from.isBlank()) ? from.trim() : getDefaultFromDate(intervalParam);
+            String tillDate = (till != null && !till.isBlank()) ? till.trim() : LocalDate.now().toString();
+
             String url = String.format(
-                    "https://iss.moex.com/iss/engines/stock/markets/%s/boards/%s/securities/%s/candles.json?from=%s&till=%s&interval=%s&iss.meta=off",
-                    market, board, cleanTicker, fromDate, tillDate, intervalParam);
+                    "https://moex.com",
+                    market, board, cleanTicker, fromDate, tillDate, intervalParam
+            );
 
             String jsonResponse = restClient.get().uri(URI.create(url)).retrieve().body(String.class);
-
-            ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(jsonResponse);
 
             JsonNode candlesNode = root.path("candles");
@@ -149,19 +153,20 @@ public class MoexService {
             }
 
             for (JsonNode row : candlesNode.path("data")) {
-                if (!row.get(openIdx).isNull()) {
+                BigDecimal open = parseBigDecimal(row.get(openIdx));
+                if (open != null) {
                     String beginStr = row.get(beginIdx).asText();
                     if ("24".equals(intervalParam) || "7".equals(intervalParam) || "31".equals(intervalParam)) {
-                        beginStr = beginStr.substring(0, 10); // Оставляем только дату (YYYY-MM-DD)
+                        beginStr = beginStr.substring(0, 10);
                     }
 
                     candles.add(new CandleDto(
                             beginStr,
-                            new BigDecimal(row.get(openIdx).asText()),
-                            new BigDecimal(row.get(highIdx).asText()),
-                            new BigDecimal(row.get(lowIdx).asText()),
-                            new BigDecimal(row.get(closeIdx).asText()),
-                            new BigDecimal(row.get(volumeIdx).asText())
+                            open,
+                            parseBigDecimal(row.get(highIdx)),
+                            parseBigDecimal(row.get(lowIdx)),
+                            parseBigDecimal(row.get(closeIdx)),
+                            parseBigDecimal(row.get(volumeIdx))
                     ));
                 }
             }
@@ -173,22 +178,6 @@ public class MoexService {
         return candles;
     }
 
-
-    // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ И ПЛАНИРОВЩИК
-    private int getColumnIndex(JsonNode columnsNode, String columnName) {
-        for (int i = 0; i < columnsNode.size(); i++) {
-            if (columnName.equals(columnsNode.get(i).asText())) return i;
-        }
-        return -1;
-    }
-
-    @Scheduled(fixedRate = 600000, initialDelay = 15000)
-    public void scheduledSync() {
-        System.out.println("[АВТООБНОВЛЕНИЕ] Запуск синхронизации рынков...");
-        int count = syncAllMarket();
-        System.out.println("[АВТООБНОВЛЕНИЕ] Завершено. Обновлено/добавлено бумаг: " + count);
-    }
-
     private static RestClient createMoexRestClient() {
         try {
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -196,8 +185,8 @@ public class MoexService {
 
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             String[] certPaths = {
-                    "certs/russian_trusted_root_ca.cer",
-                    "certs/russian_trusted_sub_ca.cer"
+                    "certs/Russian_Trusted_Root_CA.cer",
+                    "certs/Russian_Trusted_Sub_CA.cer"
             };
 
             for (int i = 0; i < certPaths.length; i++) {
@@ -223,5 +212,43 @@ public class MoexService {
         } catch (Exception e) {
             throw new RuntimeException("Ошибка инициализации SSL для MOEX", e);
         }
+    }
+
+    // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ И ПЛАНИРОВЩИК
+    private int getColumnIndex(JsonNode columnsNode, String columnName) {
+        for (int i = 0; i < columnsNode.size(); i++) {
+            if (columnName.equals(columnsNode.get(i).asText())) return i;
+        }
+        return -1;
+    }
+
+    private String getDefaultFromDate(String interval) {
+        return switch (interval) {
+            case "1" -> LocalDate.now().minusDays(1).toString();
+            case "10" -> LocalDate.now().minusDays(5).toString();
+            case "60" -> LocalDate.now().minusDays(30).toString();
+            case "7" -> LocalDate.now().minusYears(3).toString();
+            case "31" -> LocalDate.now().minusYears(10).toString();
+            default -> LocalDate.now().minusMonths(6).toString(); // для "24" (дневные свечи)
+        };
+    }
+
+    private BigDecimal parseBigDecimal(JsonNode node) {
+        if (node == null || node.isNull()) return null;
+        String val = node.asText().trim();
+        if (val.isEmpty()) return null;
+        try {
+            return new BigDecimal(val);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    //Каждые 10 минут, после 15 секунд после запуска
+    @Scheduled(fixedRate = 600000, initialDelay = 15000)
+    public void scheduledSync() {
+        System.out.println("[АВТООБНОВЛЕНИЕ] Запуск синхронизации рынков...");
+        int count = syncAllMarket();
+        System.out.println("[АВТООБНОВЛЕНИЕ] Завершено. Обновлено/добавлено бумаг: " + count);
     }
 }
